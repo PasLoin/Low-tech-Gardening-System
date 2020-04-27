@@ -1,3 +1,7 @@
+ignore:
+  - *.md
+  - Hardware/*
+
 language: c
 
 before_install:
