@@ -1,0 +1,9 @@
+http://www.resistorguide.com/resistor-color-code/
+
+# For the first commit i use only one resistor linked to the ground. 
+# For this project resistor is recyled from trash, so the value can be different and so the code too.
+
+# Todo : 
+#   1/ test adding resistor to the pin set to HIGH and mesure range and change the code to print avereage value
+#   2/ deppending on resistor (close to random) used ; make the code using resistor stored in parameters.
+
