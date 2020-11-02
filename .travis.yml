@@ -1,6 +1,7 @@
 ignore:
   - *.md
   - Hardware/*
+  - .gitignore/*
 
 language: c
 
