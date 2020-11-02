@@ -1,0 +1,100 @@
+#include <Adafruit_NeoPixel.h>
+#include <LiquidCrystal.h>
+
+#define PIN 2	 		// neopixel pin
+#define SENSOR A0		// potentiometer pin
+#define NUMPIXELS 1 	// no of pixels in neopixel strip
+
+const int motor = 13;
+const int LedRed = 12;
+const int LedGreen = 11;
+
+LiquidCrystal lcd(3, 4, 5, 6, 7, 8);
+
+/*These values adjust what is considered as wet or dry*/
+#define dryThreshold 50 	 // below this value, begin alerting dry, turn red;
+#define wetThreshold 200 	 // above this value, begin alerting wet,turn blue;
+#define thresholdCenter (dryThreshold + wetThreshold)/2    // Brightest Green point - moist
+#define crossFade 20 		 // how much blue and red should fade in to green
+
+Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
+int delayval = 100; 		 // timing delay in milliseconds
+
+int redColor = 0;
+int greenColor = 0;
+int blueColor = 0;
+
+// Sensor's reading and the value converted from 1024 to 255 for output
+int sensorValue  = 0;
+int transitionValue = 0;
+
+void setup() 
+{
+  // Initialize the NeoPixel library.
+  	pixels.begin();
+  	pinMode(SENSOR,INPUT);
+  // Initialize the LCD library.
+	Serial.begin(9600);
+  	lcd.begin(16, 2);
+  	lcd.print("   Autonomous");
+  	lcd.setCursor(0,1);
+ 	lcd.print("Gardening System");
+	pinMode(motor, OUTPUT);
+  	pinMode(LedRed, OUTPUT);
+  	pinMode(LedGreen, OUTPUT);
+  	delay(4600);
+  	lcd.clear();
+  	lcd.print("Blue=WET,Red=DRY");
+  	lcd.setCursor(0,1);
+  	lcd.print("Water Pump =");
+}
+
+void loop()
+{
+	sensorValue = analogRead(SENSOR);
+	transitionValue = map(sensorValue,0,1023,0,255);
+	setColor();
+    // pixels.Color takes RGB values, from 0,0,0 up to 255,255,255
+    pixels.setPixelColor(0,redColor,greenColor,blueColor);
+    // This sends the updated pixel color to the hardware.
+    pixels.show();
+    // Delay for a period of time (in milliseconds).
+    delay(delayval); 
+  	
+  
+  	if (redColor)
+  	{
+    	digitalWrite(motor, HIGH);
+    	digitalWrite(LedRed, LOW);
+    	digitalWrite(LedGreen, HIGH);
+      	lcd.setCursor(13,1);
+    	lcd.print("ON ");
+  	}
+  	else 
+  	{
+  	 	digitalWrite(motor, LOW);
+  	  	digitalWrite(LedRed, HIGH);
+    	digitalWrite(LedGreen, LOW);
+        lcd.setCursor(13,1);
+    	lcd.print("OFF");
+  }
+   delay(1000);
+}
+
+void setColor()
+{
+    // red value greater towards higher resistance/drier logic used
+	redColor = ((transitionValue <= dryThreshold + crossFade) && (transitionValue >= 0 ))? map(transitionValue,0,dryThreshold + crossFade,255,0) : 0;
+  	// blue value greater towards lower resistance/wetter
+	blueColor = (transitionValue >= wetThreshold - crossFade && transitionValue <= 255)? map(transitionValue,wetThreshold - crossFade,255,0,255):0; 
+  
+  	// green value towards middle resistance
+  	if(transitionValue >= dryThreshold && transitionValue <= thresholdCenter)
+  		greenColor = map(transitionValue,dryThreshold,thresholdCenter,0,255);
+
+  	else if(transitionValue > thresholdCenter && transitionValue < wetThreshold)
+    	greenColor = map(transitionValue,dryThreshold,thresholdCenter,255,0);
+
+    else
+    	greenColor = 0;              
+}
