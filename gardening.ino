@@ -61,6 +61,6 @@ for(int i=0;i<NUMPIXELS;i++){
     pixels.show(); // This sends the updated pixel color to the hardware.
     delay(delayval2); // Delay for a period of time (in milliseconds). 
  
-delay(dodo);
+// delay(dodo);this delay is not more mandatory : the read of moisture is make after each loop of the led strip
 }
 }
