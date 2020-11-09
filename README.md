@@ -1,11 +1,8 @@
 # Low-tech-Gardening-System
-Urban gardening with Arduino and Low Tech materials
+
+Urban gardening with Arduino and Low Tech materials when possible
 
 work in progress
-
-Self rules assigned for this project : 
-
-Only use Materials i have (basic Arduino componements) or materials that can be found easyly in DÉCHETS D‘ÉQUIPEMENTS ÉLECTRIQUES ET ÉLECTRONIQUES (DEEE)
 
 Update : 
 
